@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Manager - Login</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      🍳 <span data-i18n="app.title">Gestor de Recetas</span>
+    </div>
+    <div class="navbar-menu">
+      <div class="language-selector">
+        <button class="lang-btn active" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <h1 class="auth-title" data-i18n="auth.login">Iniciar Sesión</h1>
+      
+      <div class="alert alert-error" id="errorAlert"></div>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label data-i18n="auth.username">Usuario</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="username" 
+            data-i18n-placeholder="auth.username"
+            placeholder="Usuario"
+            required
+          >
+        </div>
+        
+        <div class="form-group">
+          <label data-i18n="auth.password">Contraseña</label>
+          <input 
+            type="password" 
+            class="form-control" 
+            id="password" 
+            data-i18n-placeholder="auth.password"
+            placeholder="Contraseña"
+            required
+          >
+        </div>
+        
+        <button type="submit" class="btn btn-primary" data-i18n="auth.loginButton">
+          Entrar
+        </button>
+      </form>
+      
+      <div class="auth-link">
+        <span data-i18n="auth.noAccount">¿No tienes cuenta?</span>
+        <a href="register.html" data-i18n="auth.register">Registrarse</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/i18n.js"></script>
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    // Inicializar i18n
+    document.addEventListener('DOMContentLoaded', async () => {
+      await i18n.init();
+      
+      // Language selector
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          i18n.changeLanguage(btn.dataset.lang);
+        });
+      });
+      
+      // Set active language button
+      const currentLang = i18n.getCurrentLang();
+      document.querySelector(`[data-lang="${currentLang}"]`).classList.add('active');
+    });
+
+    // Login form
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorAlert = document.getElementById('errorAlert');
+      
+      try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Guardar usuario en localStorage
+          localStorage.setItem('user', JSON.stringify(data.user));
+          window.location.href = 'dashboard.html';
+        } else {
+          errorAlert.textContent = data.error;
+          errorAlert.classList.add('show');
+        }
+      } catch (error) {
+        errorAlert.textContent = i18n.t('messages.error');
+        errorAlert.classList.add('show');
+      }
+    });
+  </script>
+</body>
+</html>

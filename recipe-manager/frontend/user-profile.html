@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Manager - User Profile</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      🍳 <span data-i18n="app.title">Gestor de Recetas</span>
+    </div>
+    <div class="navbar-menu">
+      <a href="dashboard.html" class="btn btn-secondary btn-sm" data-i18n="recipe.myRecipes">
+        Mis Recetas
+      </a>
+      <a href="explore.html" class="btn btn-secondary btn-sm" data-i18n="users.explore">
+        Explorar
+      </a>
+      <span id="userWelcome" style="margin-right: 1rem; font-weight: 600;"></span>
+      <div class="language-selector">
+        <button class="lang-btn active" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <button class="btn btn-danger btn-sm" id="logoutBtn" data-i18n="auth.logout">
+        Cerrar Sesión
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <button class="btn btn-secondary back-button" onclick="history.back()">
+      ← Volver
+    </button>
+
+    <!-- User Profile Header -->
+    <div class="profile-header">
+      <div class="profile-avatar" id="profileAvatar"></div>
+      <div class="profile-info">
+        <h1 class="profile-username" id="profileUsername"></h1>
+        <p class="profile-bio" id="profileBio"></p>
+      </div>
+    </div>
+
+    <!-- User Recipes -->
+    <div class="dashboard-header">
+      <h2 id="recipesTitle" data-i18n="recipe.publicRecipes">Recetas Públicas</h2>
+    </div>
+
+    <div id="userRecipesContainer" class="recipes-grid"></div>
+  </div>
+
+  <!-- Modal for Recipe Detail -->
+  <div id="recipeDetailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="recipeDetailTitle"></h2>
+        <button class="close-btn" id="closeDetailModalBtn">&times;</button>
+      </div>
+      
+      <div id="recipeDetailContent"></div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="closeDetailBtn" data-i18n="recipe.cancel">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/i18n.js"></script>
+  <script src="./js/user-profile.js"></script>
+</body>
+</html>

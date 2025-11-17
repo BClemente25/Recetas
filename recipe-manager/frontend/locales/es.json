@@ -1,0 +1,81 @@
+{
+  "app": {
+    "title": "Gestor de Recetas",
+    "subtitle": "Organiza tus recetas favoritas"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "username": "Usuario",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "loginButton": "Entrar",
+    "registerButton": "Crear Cuenta",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "logout": "Cerrar Sesión"
+  },
+  "recipe": {
+    "myRecipes": "Mis Recetas",
+    "addRecipe": "Agregar Receta",
+    "editRecipe": "Editar Receta",
+    "deleteRecipe": "Eliminar Receta",
+    "title": "Título",
+    "description": "Descripción",
+    "ingredients": "Ingredientes",
+    "instructions": "Instrucciones",
+    "category": "Categoría",
+    "servings": "Porciones",
+    "prepTime": "Tiempo de Preparación (min)",
+    "cookTime": "Tiempo de Cocción (min)",
+    "imageUrl": "URL de Imagen",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "noRecipes": "No tienes recetas aún. ¡Crea tu primera receta!",
+    "confirmDelete": "¿Estás seguro de eliminar esta receta?",
+    "isPublic": "Receta Pública",
+    "makePublic": "Hacer pública esta receta para que otros la vean",
+    "publicRecipes": "Recetas Públicas",
+    "by": "por"
+  },
+  "users": {
+    "search": "Buscar Usuarios",
+    "searchPlaceholder": "Buscar por nombre de usuario...",
+    "searchButton": "Buscar",
+    "viewProfile": "Ver Perfil",
+    "noResults": "No se encontraron usuarios",
+    "recipesFrom": "Recetas de",
+    "explore": "Explorar",
+    "community": "Comunidad"
+  },
+  "nutrition": {
+    "title": "Información Nutricional",
+    "search": "Buscar Ingrediente",
+    "searchButton": "Buscar",
+    "calories": "Calorías",
+    "protein": "Proteínas",
+    "carbs": "Carbohidratos",
+    "fat": "Grasas",
+    "fiber": "Fibra",
+    "per100g": "por 100g"
+  },
+  "categories": {
+    "breakfast": "Desayuno",
+    "lunch": "Almuerzo",
+    "dinner": "Cena",
+    "dessert": "Postre",
+    "snack": "Snack",
+    "drink": "Bebida"
+  },
+  "messages": {
+    "success": "Operación exitosa",
+    "error": "Ha ocurrido un error",
+    "loginSuccess": "Inicio de sesión exitoso",
+    "registerSuccess": "Registro exitoso",
+    "recipeCreated": "Receta creada exitosamente",
+    "recipeUpdated": "Receta actualizada exitosamente",
+    "recipeDeleted": "Receta eliminada exitosamente"
+  }
+}

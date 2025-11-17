@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Manager - Explore</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      🍳 <span data-i18n="app.title">Gestor de Recetas</span>
+    </div>
+    <div class="navbar-menu">
+      <a href="dashboard.html" class="btn btn-secondary btn-sm" data-i18n="recipe.myRecipes">
+        Mis Recetas
+      </a>
+      <span id="userWelcome" style="margin-right: 1rem; font-weight: 600;"></span>
+      <div class="language-selector">
+        <button class="lang-btn active" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <button class="btn btn-danger btn-sm" id="logoutBtn" data-i18n="auth.logout">
+        Cerrar Sesión
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Tabs -->
+    <div class="tab-navigation">
+      <button class="tab-button active" data-tab="public-recipes" data-i18n="recipe.publicRecipes">
+        Recetas Públicas
+      </button>
+      <button class="tab-button" data-tab="users" data-i18n="users.search">
+        Buscar Usuarios
+      </button>
+    </div>
+
+    <!-- Tab: Public Recipes -->
+    <div id="public-recipes" class="tab-content active">
+      <div id="publicRecipesContainer" class="recipes-grid"></div>
+    </div>
+
+    <!-- Tab: Users Search -->
+    <div id="users" class="tab-content">
+      <div class="user-search-section">
+        <div class="user-search-container">
+          <input 
+            type="text" 
+            class="form-control" 
+            id="userSearchInput" 
+            data-i18n-placeholder="users.searchPlaceholder"
+            placeholder="Buscar por nombre de usuario..."
+          >
+          <button class="btn btn-primary" id="userSearchBtn" data-i18n="users.searchButton">
+            Buscar
+          </button>
+        </div>
+        <div id="userSearchResults" class="users-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/i18n.js"></script>
+  <script src="./js/explore.js"></script>
+</body>
+</html>

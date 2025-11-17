@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Manager - Dashboard</title>
+  <link rel="stylesheet" href="./css/styles.css">
+  <div class="dashboard-actions">
+  <button class="btn btn-secondary" onclick="window.location.href='explore.html'" data-i18n="users.explore">
+    🌍 Explorar
+  </button>
+  </div>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      🍳 <span data-i18n="app.title">Gestor de Recetas</span>
+    </div>
+    <div class="navbar-menu">
+      <span id="userWelcome" style="margin-right: 1rem; font-weight: 600;"></span>
+      <div class="language-selector">
+        <button class="lang-btn active" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <button class="btn btn-danger btn-sm" id="logoutBtn" data-i18n="auth.logout">
+        Cerrar Sesión
+      </button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="dashboard-header">
+      <h1 class="dashboard-title" data-i18n="recipe.myRecipes">Mis Recetas</h1>
+      <div class="dashboard-actions">
+        <button class="btn btn-primary" id="addRecipeBtn" data-i18n="recipe.addRecipe">
+          + Agregar Receta
+        </button>
+        <button class="btn btn-primary" onclick="window.location.href='explore.html'" data-i18n="users.explore">
+          🌍 Explorar
+        </button>
+      </div>
+    </div>
+
+    <!-- Nutrition API Section -->
+    <div class="nutrition-section">
+      <h2 data-i18n="nutrition.title">Información Nutricional</h2>
+      <div class="nutrition-search">
+        <input 
+          type="text" 
+          class="form-control" 
+          id="nutritionSearch" 
+          data-i18n-placeholder="nutrition.search"
+          placeholder="Buscar ingrediente (ej: apple, chicken, rice)"
+        >
+        <button class="btn btn-secondary" id="searchNutritionBtn" data-i18n="nutrition.searchButton">
+          Buscar
+        </button>
+      </div>
+      <div id="nutritionResults" class="nutrition-results"></div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="alert alert-success" id="successAlert"></div>
+    <div class="alert alert-error" id="errorAlert"></div>
+
+    <!-- Recipes Grid -->
+    <div id="recipesContainer" class="recipes-grid"></div>
+  </div>
+
+  <!-- Modal for Add/Edit Recipe -->
+  <div id="recipeModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle" data-i18n="recipe.addRecipe">Agregar Receta</h2>
+        <button class="close-btn" id="closeModalBtn">&times;</button>
+      </div>
+      
+      <form id="recipeForm">
+        <input type="hidden" id="recipeId">
+        
+        <div class="form-group">
+          <label data-i18n="recipe.title">Título</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="recipeTitle" 
+            data-i18n-placeholder="recipe.title"
+            required
+          >
+        </div>
+        
+        <div class="form-group">
+          <label data-i18n="recipe.category">Categoría</label>
+          <select class="form-control" id="recipeCategory">
+            <option value="breakfast" data-i18n="categories.breakfast">Desayuno</option>
+            <option value="lunch" data-i18n="categories.lunch">Almuerzo</option>
+            <option value="dinner" data-i18n="categories.dinner">Cena</option>
+            <option value="dessert" data-i18n="categories.dessert">Postre</option>
+            <option value="snack" data-i18n="categories.snack">Snack</option>
+            <option value="drink" data-i18n="categories.drink">Bebida</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label data-i18n="recipe.description">Descripción</label>
+          <textarea 
+            class="form-control" 
+            id="recipeDescription" 
+            data-i18n-placeholder="recipe.description"
+          ></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label data-i18n="recipe.ingredients">Ingredientes (uno por línea)</label>
+          <textarea 
+            class="form-control" 
+            id="recipeIngredients" 
+            data-i18n-placeholder="recipe.ingredients"
+            required
+          ></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label data-i18n="recipe.instructions">Instrucciones</label>
+          <textarea 
+            class="form-control" 
+            id="recipeInstructions" 
+            data-i18n-placeholder="recipe.instructions"
+            required
+          ></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label data-i18n="recipe.servings">Porciones</label>
+          <input 
+            type="number" 
+            class="form-control" 
+            id="recipeServings" 
+            min="1" 
+            value="1"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label data-i18n="recipe.prepTime">Tiempo de Preparación (minutos)</label>
+          <input 
+            type="number" 
+            class="form-control" 
+            id="recipePrepTime" 
+            min="0"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label data-i18n="recipe.cookTime">Tiempo de Cocción (minutos)</label>
+          <input 
+            type="number" 
+            class="form-control" 
+            id="recipeCookTime" 
+            min="0"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label data-i18n="recipe.imageUrl">URL de Imagen (opcional)</label>
+          <input 
+            type="url" 
+            class="form-control" 
+            id="recipeImageUrl" 
+            data-i18n-placeholder="recipe.imageUrl"
+          >
+        </div>
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input type="checkbox" id="recipeIsPublic" checked>
+            <label for="recipeIsPublic">
+              <span data-i18n="recipe.isPublic">Receta Pública</span>
+              <span style="display: block; font-size: 0.875rem; color: var(--gray-color); margin-top: 0.25rem;"
+                data-i18n="recipe.makePublic">
+                Hacer pública esta receta para que otros la vean
+              </span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancelBtn" data-i18n="recipe.cancel">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary" data-i18n="recipe.save">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="./js/i18n.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
