@@ -136,8 +136,8 @@ function renderUserRecipes() {
         <p class="recipe-description">${recipe.description || ''}</p>
         <div class="recipe-meta">
           ${recipe.servings ? `<span>👥 ${recipe.servings} ${recipe.servings === 1 ? 'porción' : 'porciones'}</span>` : ''}
-          ${recipe.prep_time ? `<span>⏱️ ${recipe.prep_time} min prep</span>` : ''}
-          ${recipe.cook_time ? `<span>🔥 ${recipe.cook_time} min cocción</span>` : ''}
+          ${recipe.prepTime ? `<span>⏱️ ${recipe.prepTime} min prep</span>` : ''}
+          ${recipe.cookTime ? `<span>🔥 ${recipe.cookTime} min cocción</span>` : ''}
         </div>
         <div class="recipe-actions">
           <button class="btn btn-primary btn-sm" onclick="openRecipeDetailById(${recipe.id})">
@@ -178,8 +178,8 @@ function openRecipeDetail(recipe) {
     
     <div class="recipe-meta" style="margin-bottom: 2rem;">
       ${recipe.servings ? `<span>👥 ${recipe.servings} ${recipe.servings === 1 ? 'porción' : 'porciones'}</span>` : ''}
-      ${recipe.prep_time ? `<span>⏱️ ${recipe.prep_time} min preparación</span>` : ''}
-      ${recipe.cook_time ? `<span>🔥 ${recipe.cook_time} min cocción</span>` : ''}
+      ${recipe.prepTime ? `<span>⏱️ ${recipe.prepTime} min preparación</span>` : ''}
+      ${recipe.cookTime ? `<span>🔥 ${recipe.cookTime} min cocción</span>` : ''}
     </div>
     
     <div style="margin-bottom: 2rem;">

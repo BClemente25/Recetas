@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
 const recipeRoutes = require('./routes/recipes');
 const userRoutes = require('./routes/user');
+const publicRoutes = require('./routes/public');
 
 const app = express();
 const PORT = 3000;
@@ -17,6 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/public', publicRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {

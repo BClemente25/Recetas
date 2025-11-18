@@ -1,185 +1,145 @@
 const API_URL = 'http://localhost:3000/api';
 let currentUser = null;
 
-// Verificar autenticación
 document.addEventListener('DOMContentLoaded', async () => {
-  const userStr = localStorage.getItem('user');
-  
-  if (!userStr) {
+  // Proteger la ruta y obtener el usuario
+  currentUser = JSON.parse(localStorage.getItem('user'));
+  if (!currentUser) {
     window.location.href = 'index.html';
     return;
   }
-  
-  currentUser = JSON.parse(userStr);
-  
+
   // Inicializar i18n
   await i18n.init();
-  
-  // Actualizar bienvenida
-  document.getElementById('userWelcome').textContent = `👋 ${currentUser.username}`;
-  
-  // Language selector
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      i18n.changeLanguage(btn.dataset.lang);
-      loadPublicRecipes();
-    });
-  });
-  
-  // Set active language button
-  const currentLang = i18n.getCurrentLang();
-  document.querySelector(`[data-lang="${currentLang}"]`).classList.add('active');
-  
-  // Setup event listeners
-  setupEventListeners();
-  
-  // Cargar recetas públicas
-  await loadPublicRecipes();
-});
 
-function setupEventListeners() {
-  // Logout
+  // Configurar bienvenida y logout
+  document.getElementById('userWelcome').textContent = `👋 ${currentUser.username}`;
   document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('user');
     window.location.href = 'index.html';
   });
-  
-  // Tab navigation
-  document.querySelectorAll('.tab-button').forEach(button => {
-    button.addEventListener('click', () => {
-      const tabName = button.dataset.tab;
-      
-      // Update active tab button
-      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-      
-      // Update active tab content
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      document.getElementById(tabName).classList.add('active');
-    });
-  });
-  
-  // User search
+
+  // Configurar selector de idioma
+  setupLanguageSelector();
+
+  // Configurar pestañas de navegación
+  setupTabs();
+
+  // Cargar recetas públicas por defecto
+  loadPublicRecipes();
+
+  // Configurar búsqueda de usuarios
   document.getElementById('userSearchBtn').addEventListener('click', searchUsers);
   document.getElementById('userSearchInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       searchUsers();
     }
   });
+});
+
+function setupLanguageSelector() {
+  const currentLang = i18n.getCurrentLang();
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    if (btn.dataset.lang === currentLang) {
+      btn.classList.add('active');
+    }
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      i18n.changeLanguage(btn.dataset.lang);
+    });
+  });
 }
 
-// Cargar recetas públicas
+function setupTabs() {
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+        if (content.id === button.dataset.tab) {
+          content.classList.add('active');
+        }
+      });
+    });
+  });
+}
+
 async function loadPublicRecipes() {
-  try {
-    const response = await fetch(`${API_URL}/users/feed/public`);
-    const recipes = await response.json();
-    renderPublicRecipes(recipes);
-  } catch (error) {
-    console.error('Error al cargar recetas públicas:', error);
-  }
-}
-
-// Renderizar recetas públicas
-function renderPublicRecipes(recipes) {
   const container = document.getElementById('publicRecipesContainer');
-  
-  if (recipes.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">🍳</div>
-        <p class="empty-state-text">No hay recetas públicas aún</p>
-      </div>
-    `;
-    return;
-  }
-  
-  container.innerHTML = recipes.map(recipe => `
-    <div class="recipe-card">
-      ${recipe.image_url ? 
-        `<img src="${recipe.image_url}" alt="${recipe.title}" class="recipe-image" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">` :
-        `<div class="recipe-image"></div>`
-      }
-      <div class="recipe-content">
-        <div class="recipe-author">
-          <div class="recipe-author-avatar">${recipe.username.charAt(0).toUpperCase()}</div>
-          <span>${i18n.t('recipe.by')} <strong>${recipe.username}</strong></span>
-        </div>
-        <h3 class="recipe-title">${recipe.title}</h3>
-        <span class="recipe-category">${i18n.t(`categories.${recipe.category}`)}</span>
-        <p class="recipe-description">${recipe.description || ''}</p>
-        <div class="recipe-meta">
-          ${recipe.servings ? `<span>👥 ${recipe.servings} ${recipe.servings === 1 ? 'porción' : 'porciones'}</span>` : ''}
-          ${recipe.prep_time ? `<span>⏱️ ${recipe.prep_time} min prep</span>` : ''}
-          ${recipe.cook_time ? `<span>🔥 ${recipe.cook_time} min cocción</span>` : ''}
-        </div>
-        <div class="recipe-actions">
-          <button class="btn btn-secondary btn-sm" onclick="viewRecipeDetail(${recipe.id}, ${recipe.user_id})">
-            Ver Detalle
-          </button>
-          <button class="btn btn-primary btn-sm" onclick="viewUserProfile(${recipe.user_id})">
-            ${i18n.t('users.viewProfile')}
-          </button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
+  container.innerHTML = 'Cargando recetas...';
 
-// Buscar usuarios
-async function searchUsers() {
-  const query = document.getElementById('userSearchInput').value.trim();
-  const resultsDiv = document.getElementById('userSearchResults');
-  
-  if (query.length < 2) {
-    resultsDiv.innerHTML = `<p style="text-align: center; color: var(--gray-color);">Ingresa al menos 2 caracteres para buscar</p>`;
-    return;
-  }
-  
-  resultsDiv.innerHTML = '<p style="text-align: center;">Buscando...</p>';
-  
   try {
-    const response = await fetch(`${API_URL}/users/search?query=${encodeURIComponent(query)}`);
-    const users = await response.json();
-    renderUsers(users);
+    // Usamos la ruta del feed que creaste en user.js
+    const response = await fetch(`${API_URL}/user/feed/public`);
+    if (!response.ok) throw new Error('Error al cargar recetas públicas');
+
+    const recipes = await response.json();
+
+    if (recipes.length === 0) {
+      container.innerHTML = `<p>${i18n.t('recipe.noRecipes')}</p>`;
+      return;
+    }
+
+    container.innerHTML = ''; // Limpiar el contenedor
+    recipes.forEach(recipe => {
+      const recipeCard = document.createElement('div');
+      recipeCard.className = 'recipe-card';
+      recipeCard.innerHTML = `
+        <div class="recipe-card-image" style="background-image: url('${recipe.image_url || './assets/placeholder.png'}')"></div>
+        <div class="recipe-card-content">
+          <h3>${recipe.title}</h3>
+          <p class="recipe-author">${i18n.t('recipe.by')} <a href="user-profile.html?id=${recipe.user_id}">${recipe.username}</a></p>
+        </div>
+      `;
+      // Opcional: hacer que la tarjeta sea clickeable para ver detalles
+      // recipeCard.addEventListener('click', () => showRecipeDetail(recipe.id));
+      container.appendChild(recipeCard);
+    });
   } catch (error) {
-    resultsDiv.innerHTML = `<p style="text-align: center; color: var(--danger-color);">Error al buscar usuarios</p>`;
+    container.innerHTML = `<p class="alert alert-error">${error.message}</p>`;
   }
 }
 
-// Renderizar usuarios
-function renderUsers(users) {
-  const container = document.getElementById('userSearchResults');
-  
-  if (users.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">👥</div>
-        <p class="empty-state-text" data-i18n="users.noResults">${i18n.t('users.noResults')}</p>
-      </div>
-    `;
+async function searchUsers() {
+  const query = document.getElementById('userSearchInput').value;
+  const resultsContainer = document.getElementById('userSearchResults');
+
+  if (query.length < 2) {
+    resultsContainer.innerHTML = `<p>${i18n.t('users.noResults')}</p>`;
     return;
   }
-  
-  container.innerHTML = users.map(user => `
-    <div class="user-card" onclick="viewUserProfile(${user.id})">
-      <div class="user-avatar">${user.username.charAt(0).toUpperCase()}</div>
-      <div class="user-name">${user.username}</div>
-      ${user.bio ? `<div class="user-bio">${user.bio}</div>` : ''}
-      <button class="btn btn-primary btn-sm" data-i18n="users.viewProfile">
-        ${i18n.t('users.viewProfile')}
-      </button>
-    </div>
-  `).join('');
-}
 
-// Ver perfil de usuario
-function viewUserProfile(userId) {
-  window.location.href = `user-profile.html?id=${userId}`;
-}
+  try {
+    const response = await fetch(`${API_URL}/user/search?query=${encodeURIComponent(query)}`);
+    if (!response.ok) throw new Error('Error al buscar usuarios');
 
-// Ver detalle de receta
-function viewRecipeDetail(recipeId, userId) {
-  window.location.href = `user-profile.html?id=${userId}&recipe=${recipeId}`;
+    const users = await response.json();
+    resultsContainer.innerHTML = '';
+
+    if (users.length === 0) {
+      resultsContainer.innerHTML = `<p>${i18n.t('users.noResults')}</p>`;
+      return;
+    }
+
+    users.forEach(user => {
+      const userCard = document.createElement('a');
+      userCard.href = `user-profile.html?id=${user.id}`;
+      userCard.className = 'user-card';
+      userCard.innerHTML = `
+        <div class="user-avatar" style="background-image: url('${user.avatar_url || './assets/default-avatar.png'}')"></div>
+        <div class="user-info">
+          <h4>${user.username}</h4>
+        </div>
+      `;
+      resultsContainer.appendChild(userCard);
+    });
+  } catch (error) {
+    resultsContainer.innerHTML = `<p class="alert alert-error">${error.message}</p>`;
+  }
 }

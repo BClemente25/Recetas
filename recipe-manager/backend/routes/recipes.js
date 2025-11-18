@@ -29,8 +29,8 @@ router.post('/', (req, res) => {
     instructions,
     category,
     servings,
-    prep_time,
-    cook_time,
+    prepTime,
+    cookTime,
     image_url,
     is_public
   } = req.body;
@@ -40,9 +40,9 @@ router.post('/', (req, res) => {
   }
 
   db.run(
-    `INSERT INTO recipes (user_id, title, description, ingredients, instructions, category, servings, prep_time, cook_time, image_url, is_public)
+    `INSERT INTO recipes (user_id, title, description, ingredients, instructions, category, servings, prepTime, cookTime, image_url, is_public)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [user_id, title, description, ingredients, instructions, category, servings, prep_time, cook_time, image_url, is_public ? 1 : 0],
+    [user_id, title, description, ingredients, instructions, category, servings, prepTime, cookTime, image_url, is_public ? 1 : 0],
     function (err) {
       if (err) {
         return res.status(500).json({ error: 'Error al crear receta' });
@@ -66,8 +66,8 @@ router.put('/:id', (req, res) => {
     instructions,
     category,
     servings,
-    prep_time,
-    cook_time,
+    prepTime,
+    cookTime,
     image_url,
     is_public
   } = req.body;
@@ -75,10 +75,10 @@ router.put('/:id', (req, res) => {
   db.run(
     `UPDATE recipes 
      SET title = ?, description = ?, ingredients = ?, instructions = ?, 
-         category = ?, servings = ?, prep_time = ?, cook_time = ?, image_url = ?, is_public = ?,
+         category = ?, servings = ?, prepTime = ?, cookTime = ?, image_url = ?, is_public = ?,
          updated_at = CURRENT_TIMESTAMP
      WHERE id = ?`,
-    [title, description, ingredients, instructions, category, servings, prep_time, cook_time, image_url, is_public ? 1 : 0, id],
+    [title, description, ingredients, instructions, category, servings, prepTime, cookTime, image_url, is_public ? 1 : 0, id],
     function (err) {
       if (err) {
         return res.status(500).json({ error: 'Error al actualizar receta' });

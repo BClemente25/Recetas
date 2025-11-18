@@ -1,7 +1,4 @@
 const API_URL = 'http://localhost:3000/api';
-//const NUTRITION_API = 'https://api.edamam.com/api/nutrition-data';
-//const NUTRITION_APP_ID = 'cf1bf272'; // Demo App ID
-//const NUTRITION_APP_KEY = '645cada1dc89d2ee5ccf008ec99c026d'; // Demo API Key
 
 let currentUser = null;
 let recipes = [];
@@ -122,8 +119,8 @@ function renderRecipes() {
         <p class="recipe-description">${recipe.description || ''}</p>
         <div class="recipe-meta">
           ${recipe.servings ? `<span>👥 ${recipe.servings} ${recipe.servings === 1 ? 'porción' : 'porciones'}</span>` : ''}
-          ${recipe.prep_time ? `<span>⏱️ ${recipe.prep_time} min prep</span>` : ''}
-          ${recipe.cook_time ? `<span>🔥 ${recipe.cook_time} min cocción</span>` : ''}
+          ${recipe.prepTime ? `<span>⏱️ ${recipe.prepTime} min prep</span>` : ''}
+          ${recipe.cookTime ? `<span>🔥 ${recipe.cookTime} min cocción</span>` : ''}
         </div>
         <div class="recipe-actions">
           <button class="btn btn-secondary btn-sm" onclick="editRecipe(${recipe.id})" data-i18n="recipe.edit">
@@ -156,8 +153,8 @@ function openModal(recipe = null) {
     document.getElementById('recipeIngredients').value = recipe.ingredients;
     document.getElementById('recipeInstructions').value = recipe.instructions;
     document.getElementById('recipeServings').value = recipe.servings || 1;
-    document.getElementById('recipePrepTime').value = recipe.prep_time || '';
-    document.getElementById('recipeCookTime').value = recipe.cook_time || '';
+    document.getElementById('recipePrepTime').value = recipe.prepTime || '';
+    document.getElementById('recipeCookTime').value = recipe.cookTime || '';
     document.getElementById('recipeImageUrl').value = recipe.image_url || '';
   } else {
     // Nueva receta
@@ -189,8 +186,8 @@ async function handleRecipeSubmit(e) {
     ingredients: document.getElementById('recipeIngredients').value,
     instructions: document.getElementById('recipeInstructions').value,
     servings: parseInt(document.getElementById('recipeServings').value) || 1,
-    prep_time: parseInt(document.getElementById('recipePrepTime').value) || null,
-    cook_time: parseInt(document.getElementById('recipeCookTime').value) || null,
+    prepTime: parseInt(document.getElementById('recipePrepTime').value) || null,
+    cookTime: parseInt(document.getElementById('recipeCookTime').value) || null,
     image_url: document.getElementById('recipeImageUrl').value,
     is_public: document.getElementById('recipeIsPublic').checked ? 1 : 0
   };
