@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recipe Manager - Explore</title>
+  <title>EasyRecipe - Explore</title>
   <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-brand">
-      🍳 <span data-i18n="app.title">Gestor de Recetas</span>
+      🍳 <span data-i18n="app.title">EasyRecipe</span>
     </div>
     <div class="navbar-menu">
       <a href="dashboard.html" class="btn btn-secondary btn-sm" data-i18n="recipe.myRecipes">
@@ -27,7 +27,6 @@
   </nav>
 
   <div class="container">
-    <!-- Tabs -->
     <div class="tab-navigation">
       <button class="tab-button active" data-tab="public-recipes" data-i18n="recipe.publicRecipes" >
         Recetas Públicas
@@ -37,12 +36,10 @@
       </button>
     </div>
 
-    <!-- Tab: Public Recipes -->
     <div id="public-recipes" class="tab-content active">
       <div id="publicRecipesContainer" class="recipes-grid"></div>
     </div>
 
-    <!-- Tab: Users Search -->
     <div id="users" class="tab-content">
       <div class="user-search-section">
         <div class="user-search-container">
@@ -58,6 +55,24 @@
           </button>
         </div>
         <div id="userSearchResults" class="users-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Recipe Detail -->
+  <div id="recipeDetailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="recipeDetailTitle"></h2>
+        <button class="close-btn" id="closeDetailModalBtn">&times;</button>
+      </div>
+      
+      <div id="recipeDetailContent"></div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="closeDetailBtn" data-i18n="recipe.cancel">
+          Cerrar
+        </button>
       </div>
     </div>
   </div>

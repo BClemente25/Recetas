@@ -3,7 +3,6 @@ const db = require('../database');
 
 const router = express.Router();
 
-// Obtener todas las recetas del usuario (privadas y públicas)
 router.get('/:userId', (req, res) => {
   const { userId } = req.params;
 
@@ -19,7 +18,6 @@ router.get('/:userId', (req, res) => {
   );
 });
 
-// Crear nueva receta
 router.post('/', (req, res) => {
   const {
     user_id,
@@ -56,7 +54,6 @@ router.post('/', (req, res) => {
   );
 });
 
-// Actualizar receta
 router.put('/:id', (req, res) => {
   const { id } = req.params;
   const {
@@ -93,7 +90,6 @@ router.put('/:id', (req, res) => {
   );
 });
 
-// Eliminar receta
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
 

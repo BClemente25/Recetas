@@ -4,7 +4,6 @@ const db = require('../database');
 
 const router = express.Router();
 
-// Registro de usuario
 router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -13,7 +12,6 @@ router.post('/register', async (req, res) => {
   }
 
   try {
-    // Hash de la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
     db.run(
@@ -39,7 +37,6 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login de usuario
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
 

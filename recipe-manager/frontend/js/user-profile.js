@@ -2,8 +2,8 @@ const API_URL = 'http://localhost:3000/api';
 let currentUser = null;
 let viewingUserId = null;
 let userRecipes = [];
+let isFollowing = false;
 
-// Verificar autenticación y cargar perfil
 document.addEventListener('DOMContentLoaded', async () => {
   const userStr = localStorage.getItem('user');
   
@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   currentUser = JSON.parse(userStr);
   
-  // Obtener ID del usuario a ver desde URL
   const urlParams = new URLSearchParams(window.location.search);
   viewingUserId = urlParams.get('id');
   const recipeId = urlParams.get('recipe');
@@ -24,13 +23,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
   
-  // Inicializar i18n
   await i18n.init();
   
-  // Actualizar bienvenida
   document.getElementById('userWelcome').textContent = `👋 ${currentUser.username}`;
   
-  // Language selector
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
@@ -40,18 +36,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
   
-  // Set active language button
   const currentLang = i18n.getCurrentLang();
   document.querySelector(`[data-lang="${currentLang}"]`).classList.add('active');
   
-  // Setup event listeners
   setupEventListeners();
   
-  // Cargar perfil y recetas
   await loadUserProfile();
   await loadUserRecipes();
+  await loadFollowData();
   
-  // Si hay un recipeId específico, abrir su detalle
   if (recipeId) {
     const recipe = userRecipes.find(r => r.id === parseInt(recipeId));
     if (recipe) {
@@ -61,17 +54,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function setupEventListeners() {
-  // Logout
   document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('user');
     window.location.href = 'index.html';
   });
   
-  // Close recipe detail modal
   document.getElementById('closeDetailModalBtn').addEventListener('click', closeRecipeDetail);
   document.getElementById('closeDetailBtn').addEventListener('click', closeRecipeDetail);
   
-  // Close modal when clicking outside
   document.getElementById('recipeDetailModal').addEventListener('click', (e) => {
     if (e.target.id === 'recipeDetailModal') {
       closeRecipeDetail();
@@ -79,18 +69,15 @@ function setupEventListeners() {
   });
 }
 
-// Cargar perfil de usuario
 async function loadUserProfile() {
   try {
-    const response = await fetch(`${API_URL}/users/${viewingUserId}`);
+    const response = await fetch(`${API_URL}/user/${viewingUserId}`);
     const user = await response.json();
     
-    // Actualizar UI con información del usuario
-    document.getElementById('profileAvatar').textContent = user.username.charAt(0).toUpperCase();
+    document.getElementById('profileAvatar').style.backgroundImage = `url('${user.avatar_url || 'https://via.placeholder.com/100?text=' + user.username.charAt(0)}')`;
     document.getElementById('profileUsername').textContent = user.username;
-    document.getElementById('profileBio').textContent = user.bio || 'Sin biografía';
+    document.getElementById('profileBio').textContent = user.bio || i18n.t('users.noBio');
     
-    // Actualizar título de recetas
     document.getElementById('recipesTitle').textContent = `${i18n.t('users.recipesFrom')} ${user.username}`;
   } catch (error) {
     console.error('Error al cargar perfil:', error);
@@ -99,10 +86,9 @@ async function loadUserProfile() {
   }
 }
 
-// Cargar recetas del usuario
 async function loadUserRecipes() {
   try {
-    const response = await fetch(`${API_URL}/users/${viewingUserId}/recipes`);
+    const response = await fetch(`${API_URL}/user/${viewingUserId}/recipes`);
     userRecipes = await response.json();
     renderUserRecipes();
   } catch (error) {
@@ -110,7 +96,77 @@ async function loadUserRecipes() {
   }
 }
 
-// Renderizar recetas del usuario
+async function loadFollowData() {
+  // No mostrar botón de seguir en nuestro propio perfil
+  if (currentUser.id === parseInt(viewingUserId)) {
+    document.getElementById('followActionContainer').style.display = 'none';
+  } else {
+    // Verificar si el usuario actual ya sigue a este perfil
+    const statusRes = await fetch(`${API_URL}/user/${viewingUserId}/follow-status/${currentUser.id}`);
+    const statusData = await statusRes.json();
+    isFollowing = statusData.isFollowing;
+    renderFollowButton();
+  }
+
+  // Cargar contadores
+  const followersRes = await fetch(`${API_URL}/user/${viewingUserId}/followers`);
+  const followersData = await followersRes.json();
+  document.getElementById('followersCount').textContent = followersData.length;
+
+  const followingRes = await fetch(`${API_URL}/user/${viewingUserId}/following`);
+  const followingData = await followingRes.json();
+  document.getElementById('followingCount').textContent = followingData.length;
+}
+
+function renderFollowButton() {
+  const container = document.getElementById('followActionContainer');
+  if (isFollowing) {
+    container.innerHTML = `<button class="btn btn-secondary" id="followBtn">${i18n.t('users.unfollow') || 'Dejar de Seguir'}</button>`;
+    document.getElementById('followBtn').addEventListener('click', handleUnfollow);
+  } else {
+    container.innerHTML = `<button class="btn btn-primary" id="followBtn">${i18n.t('users.follow') || 'Seguir'}</button>`;
+    document.getElementById('followBtn').addEventListener('click', handleFollow);
+  }
+}
+
+async function handleFollow() {
+  try {
+    const response = await fetch(`${API_URL}/user/${viewingUserId}/follow`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ currentUserId: currentUser.id })
+    });
+    if (!response.ok) throw new Error('Error al seguir');
+    
+    isFollowing = true;
+    renderFollowButton();
+    // Actualizar contador de seguidores
+    const followersCountEl = document.getElementById('followersCount');
+    followersCountEl.textContent = parseInt(followersCountEl.textContent) + 1;
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+async function handleUnfollow() {
+  try {
+    const response = await fetch(`${API_URL}/user/${viewingUserId}/unfollow`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ currentUserId: currentUser.id })
+    });
+    if (!response.ok) throw new Error('Error al dejar de seguir');
+
+    isFollowing = false;
+    renderFollowButton();
+    // Actualizar contador de seguidores
+    const followersCountEl = document.getElementById('followersCount');
+    followersCountEl.textContent = parseInt(followersCountEl.textContent) - 1;
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
 function renderUserRecipes() {
   const container = document.getElementById('userRecipesContainer');
   
@@ -118,7 +174,7 @@ function renderUserRecipes() {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">🍳</div>
-        <p class="empty-state-text">Este usuario no tiene recetas públicas</p>
+        <p class="empty-state-text">${i18n.t('recipe.noPublicRecipes') || 'Este usuario no tiene recetas públicas.'}</p>
       </div>
     `;
     return;
@@ -127,21 +183,21 @@ function renderUserRecipes() {
   container.innerHTML = userRecipes.map(recipe => `
     <div class="recipe-card">
       ${recipe.image_url ? 
-        `<img src="${recipe.image_url}" alt="${recipe.title}" class="recipe-image" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">` :
-        `<div class="recipe-image"></div>`
+        `<div class="recipe-card-image" style="background-image: url('${recipe.image_url}')"></div>` :
+        `<div class="recipe-card-image" style="background-image: url('https://via.placeholder.com/300x200?text=Receta')"></div>`
       }
       <div class="recipe-content">
         <h3 class="recipe-title">${recipe.title}</h3>
         <span class="recipe-category">${i18n.t(`categories.${recipe.category}`)}</span>
         <p class="recipe-description">${recipe.description || ''}</p>
         <div class="recipe-meta">
-          ${recipe.servings ? `<span>👥 ${recipe.servings} ${recipe.servings === 1 ? 'porción' : 'porciones'}</span>` : ''}
-          ${recipe.prepTime ? `<span>⏱️ ${recipe.prepTime} min prep</span>` : ''}
-          ${recipe.cookTime ? `<span>🔥 ${recipe.cookTime} min cocción</span>` : ''}
+          ${recipe.servings ? `<span>👥 ${recipe.servings} ${recipe.servings === 1 ? i18n.t('recipe.serving') : i18n.t('recipe.servingsPlural')}</span>` : ''}
+          ${recipe.prepTime ? `<span>⏱️ ${recipe.prepTime} ${i18n.t('recipe.prepTimeSuffix')}</span>` : ''}
+          ${recipe.cookTime ? `<span>🔥 ${recipe.cookTime} ${i18n.t('recipe.cookTimeSuffix')}</span>` : ''}
         </div>
         <div class="recipe-actions">
           <button class="btn btn-primary btn-sm" onclick="openRecipeDetailById(${recipe.id})">
-            Ver Detalle
+            ${i18n.t('recipe.viewDetail') || 'Ver Detalle'}
           </button>
         </div>
       </div>
@@ -149,7 +205,6 @@ function renderUserRecipes() {
   `).join('');
 }
 
-// Abrir detalle de receta por ID
 function openRecipeDetailById(recipeId) {
   const recipe = userRecipes.find(r => r.id === recipeId);
   if (recipe) {
@@ -157,7 +212,6 @@ function openRecipeDetailById(recipeId) {
   }
 }
 
-// Abrir modal con detalle de receta
 function openRecipeDetail(recipe) {
   const modal = document.getElementById('recipeDetailModal');
   const title = document.getElementById('recipeDetailTitle');
@@ -169,7 +223,7 @@ function openRecipeDetail(recipe) {
   const instructionsList = recipe.instructions.split('\n').filter(i => i.trim()).map(i => `<li>${i}</li>`).join('');
   
   content.innerHTML = `
-    ${recipe.image_url ? `<img src="${recipe.image_url}" alt="${recipe.title}" style="width: 100%; border-radius: 10px; margin-bottom: 1.5rem;" onerror="this.style.display='none'">` : ''}
+    ${recipe.image_url ? `<div class="recipe-card-image" style="height: 250px; background-image: url('${recipe.image_url}'); margin-bottom: 1.5rem;"></div>` : ''}
     
     <div style="margin-bottom: 1.5rem;">
       <span class="recipe-category">${i18n.t(`categories.${recipe.category}`)}</span>
@@ -177,9 +231,9 @@ function openRecipeDetail(recipe) {
     </div>
     
     <div class="recipe-meta" style="margin-bottom: 2rem;">
-      ${recipe.servings ? `<span>👥 ${recipe.servings} ${recipe.servings === 1 ? 'porción' : 'porciones'}</span>` : ''}
-      ${recipe.prepTime ? `<span>⏱️ ${recipe.prepTime} min preparación</span>` : ''}
-      ${recipe.cookTime ? `<span>🔥 ${recipe.cookTime} min cocción</span>` : ''}
+      ${recipe.servings ? `<span>👥 ${recipe.servings} ${recipe.servings === 1 ? i18n.t('recipe.serving') : i18n.t('recipe.servingsPlural')}</span>` : ''}
+      ${recipe.prepTime ? `<span>⏱️ ${recipe.prepTime} ${i18n.t('recipe.prepTimeSuffix')}</span>` : ''}
+      ${recipe.cookTime ? `<span>🔥 ${recipe.cookTime} ${i18n.t('recipe.cookTimeSuffix')}</span>` : ''}
     </div>
     
     <div style="margin-bottom: 2rem;">
@@ -200,7 +254,6 @@ function openRecipeDetail(recipe) {
   modal.classList.add('active');
 }
 
-// Cerrar modal de detalle
 function closeRecipeDetail() {
   const modal = document.getElementById('recipeDetailModal');
   modal.classList.remove('active');

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recipe Manager - User Profile</title>
+  <title>EasyRecipe - User Profile</title>
   <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
@@ -34,16 +34,23 @@
       ← Volver
     </button>
 
-    <!-- User Profile Header -->
     <div class="profile-header">
       <div class="profile-avatar" id="profileAvatar"></div>
       <div class="profile-info">
         <h1 class="profile-username" id="profileUsername"></h1>
         <p class="profile-bio" id="profileBio"></p>
+        <div class="profile-stats">
+          <div class="stat">
+            <span class="stat-count" id="followersCount">0</span> <span data-i18n="users.followers">Seguidores</span>
+          </div>
+          <div class="stat">
+            <span class="stat-count" id="followingCount">0</span> <span data-i18n="users.following">Siguiendo</span>
+          </div>
+        </div>
+        <div id="followActionContainer" class="profile-actions"></div>
       </div>
     </div>
 
-    <!-- User Recipes -->
     <div class="dashboard-header">
       <h2 id="recipesTitle" data-i18n="recipe.publicRecipes">Recetas Públicas</h2>
     </div>
@@ -51,7 +58,6 @@
     <div id="userRecipesContainer" class="recipes-grid"></div>
   </div>
 
-  <!-- Modal for Recipe Detail -->
   <div id="recipeDetailModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -69,6 +75,7 @@
     </div>
   </div>
 
+  <script src="./js/main.js"></script>
   <script src="./js/i18n.js"></script>
   <script src="./js/user-profile.js"></script>
 </body>

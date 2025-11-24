@@ -26,6 +26,8 @@
     "instructions": "Instrucciones",
     "category": "Categoría",
     "servings": "Porciones",
+    "serving": "porción",
+    "servingsPlural": "porciones",
     "prepTime": "Tiempo de Preparación (min)",
     "cookTime": "Tiempo de Cocción (min)",
     "imageUrl": "URL de Imagen",
@@ -37,18 +39,28 @@
     "confirmDelete": "¿Estás seguro de eliminar esta receta?",
     "isPublic": "Receta Pública",
     "makePublic": "Hacer pública esta receta para que otros la vean",
+    "noPublicRecipes": "Este usuario no tiene recetas públicas aún.",
     "publicRecipes": "Recetas Públicas",
-    "by": "por"
+    "by": "por",
+    "viewDetail": "Ver Detalle",
+    "prepTimeSuffix": "min preparación",
+    "cookTimeSuffix": "min cocción"
   },
   "users": {
     "search": "Buscar Usuarios",
     "searchPlaceholder": "Buscar por nombre de usuario...",
     "searchButton": "Buscar",
     "viewProfile": "Ver Perfil",
-    "noResults": "No se encontraron usuarios",
+    "noResults": "No se encontraron usuarios con ese nombre",
+    "searchHint": "Ingresa al menos 2 caracteres para buscar.",
     "recipesFrom": "Recetas de",
     "explore": "Explorar",
-    "community": "Comunidad"
+    "community": "Comunidad",
+    "noBio": "Sin biografía",
+    "followers": "Seguidores",
+    "following": "Siguiendo",
+    "follow": "Seguir",
+    "unfollow": "Dejar de Seguir"
   },
   "nutrition": {
     "title": "Información Nutricional",
@@ -71,11 +83,14 @@
   },
   "messages": {
     "success": "Operación exitosa",
-    "error": "Ha ocurrido un error",
+    "error": "Ha ocurrido un error inesperado",
     "loginSuccess": "Inicio de sesión exitoso",
     "registerSuccess": "Registro exitoso",
     "recipeCreated": "Receta creada exitosamente",
     "recipeUpdated": "Receta actualizada exitosamente",
-    "recipeDeleted": "Receta eliminada exitosamente"
+    "recipeDeleted": "Receta eliminada exitosamente",
+    "loading": "Cargando...",
+    "errorRecipes": "Error al cargar las recetas. Inténtalo de nuevo.",
+    "errorUsers": "Error al buscar usuarios. Inténtalo de nuevo."
   }
 }

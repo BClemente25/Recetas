@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recipe Manager - Register</title>
+  <title>EasyRecipe - Register</title>
   <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-brand">
-      🍳 <span data-i18n="app.title">Gestor de Recetas</span>
+      🍳 <span data-i18n="app.title">EasyRecipe</span>
     </div>
     <div class="navbar-menu">
       <div class="language-selector">
@@ -76,15 +76,14 @@
     </div>
   </div>
 
+  <script src="./js/main.js"></script>
   <script src="./js/i18n.js"></script>
   <script>
     const API_URL = 'http://localhost:3000/api';
     
-    // Inicializar i18n
     document.addEventListener('DOMContentLoaded', async () => {
       await i18n.init();
       
-      // Language selector
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
@@ -93,12 +92,10 @@
         });
       });
       
-      // Set active language button
       const currentLang = i18n.getCurrentLang();
       document.querySelector(`[data-lang="${currentLang}"]`).classList.add('active');
     });
 
-    // Register form
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -126,7 +123,6 @@
           successAlert.textContent = i18n.t('messages.registerSuccess');
           successAlert.classList.add('show');
           
-          // Redirigir al login después de 2 segundos
           setTimeout(() => {
             window.location.href = 'index.html';
           }, 2000);

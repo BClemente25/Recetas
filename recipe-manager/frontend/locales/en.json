@@ -5,11 +5,11 @@
   },
   "auth": {
     "login": "Login",
-    "register": "Sign Up",
+    "register": "Register",
     "username": "Username",
     "email": "Email",
     "password": "Password",
-    "loginButton": "Sign In",
+    "loginButton": "Login",
     "registerButton": "Create Account",
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
@@ -26,29 +26,41 @@
     "instructions": "Instructions",
     "category": "Category",
     "servings": "Servings",
-    "prepTime": "Prep Time (min)",
-    "cookTime": "Cook Time (min)",
+    "serving": "serving",
+    "servingsPlural": "servings",
+    "prepTime": "Preparation Time (min)",
+    "prepTimeSuffix": "min prep",
+    "cookTime": "Cooking Time (min)",
+    "cookTimeSuffix": "min cook",
     "imageUrl": "Image URL",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
-    "noRecipes": "You don't have any recipes yet. Create your first recipe!",
+    "noRecipes": "You don't have any recipes yet. Create your first one!",
     "confirmDelete": "Are you sure you want to delete this recipe?",
     "isPublic": "Public Recipe",
     "makePublic": "Make this recipe public for others to see",
+    "noPublicRecipes": "This user has no public recipes yet.",
     "publicRecipes": "Public Recipes",
-    "by": "by"
+    "by": "by",
+    "viewDetail": "View Detail"
   },
   "users": {
     "search": "Search Users",
     "searchPlaceholder": "Search by username...",
     "searchButton": "Search",
     "viewProfile": "View Profile",
-    "noResults": "No users found",
+    "noResults": "No users found with that name",
+    "searchHint": "Enter at least 2 characters to search.",
     "recipesFrom": "Recipes from",
     "explore": "Explore",
-    "community": "Community"
+    "community": "Community",
+    "noBio": "No biography provided.",
+    "followers": "Followers",
+    "following": "Following",
+    "follow": "Follow",
+    "unfollow": "Unfollow"
   },
   "nutrition": {
     "title": "Nutritional Information",
@@ -71,11 +83,14 @@
   },
   "messages": {
     "success": "Operation successful",
-    "error": "An error occurred",
+    "error": "An unexpected error occurred",
     "loginSuccess": "Login successful",
     "registerSuccess": "Registration successful",
     "recipeCreated": "Recipe created successfully",
     "recipeUpdated": "Recipe updated successfully",
-    "recipeDeleted": "Recipe deleted successfully"
+    "recipeDeleted": "Recipe deleted successfully",
+    "loading": "Loading...",
+    "errorRecipes": "Error loading recipes. Please try again.",
+    "errorUsers": "Error searching for users. Please try again."
   }
 }

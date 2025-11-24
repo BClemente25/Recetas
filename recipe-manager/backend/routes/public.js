@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database'); // Asumo que tienes un archivo para la conexión a la BD
+const db = require('../database');
 
-// GET /api/public/recipes - Obtener todas las recetas públicas
 router.get('/recipes', (req, res) => {
   const sql = `
     SELECT r.*, u.username 
@@ -15,14 +14,10 @@ router.get('/recipes', (req, res) => {
       res.status(500).json({ error: err.message });
       return;
     }
-    res.json({
-      message: 'success',
-      data: rows,
-    });
+    res.json(rows);
   });
 });
 
-// GET /api/public/users/:userId/recipes - Obtener las recetas públicas de un usuario
 router.get('/users/:userId/recipes', (req, res) => {
   const { userId } = req.params;
   const sql = `
@@ -36,10 +31,7 @@ router.get('/users/:userId/recipes', (req, res) => {
       res.status(500).json({ error: err.message });
       return;
     }
-    res.json({
-      message: 'success',
-      data: rows,
-    });
+    res.json(rows);
   });
 });
 
